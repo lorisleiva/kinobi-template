@@ -16,7 +16,6 @@ pub enum Key {
 
 #[repr(C)]
 #[derive(Clone, BorshSerialize, BorshDeserialize, Debug, ShankAccount)]
-#[seeds("counter", authority("The authority allowed to modify the counter"))]
 pub struct Counter {
     pub key: Key,
     pub authority: Pubkey,
@@ -25,6 +24,14 @@ pub struct Counter {
 
 impl Counter {
     pub const LEN: usize = 1 + 32 + 4;
+
+    pub fn seeds(authority: &Pubkey) -> Vec<&[u8]> {
+        vec!["counter".as_bytes(), authority.as_ref()]
+    }
+
+    pub fn find_pda(authority: &Pubkey) -> (Pubkey, u8) {
+        Pubkey::find_program_address(&Self::seeds(authority), &crate::ID)
+    }
 
     pub fn load(account: &AccountInfo) -> Result<Self, ProgramError> {
         let mut bytes: &[u8] = &(*account.data).borrow();
