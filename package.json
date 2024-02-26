@@ -1,19 +1,19 @@
 {
   "private": true,
   "scripts": {
-    "programs:build": "dotenvx run -- ./configs/scripts/program/build.sh",
-    "programs:test": "dotenvx run -- RUST_LOG=error ./configs/scripts/program/test.sh",
-    "programs:debug": "dotenvx run -- ./configs/scripts/program/test.sh",
-    "programs:clean": "dotenvx run -- ./configs/scripts/program/clean.sh",
-    "clients:rust:test": "dotenvx run -- ./configs/scripts/client/test-rust.sh",
-    "clients:js:test": "dotenvx run -- ./configs/scripts/client/test-js.sh",
-    "generate": "dotenvx run -- pnpm generate:idls && pnpm generate:clients",
-    "generate:idls": "dotenvx run -- node ./configs/shank.cjs",
-    "generate:clients": "dotenvx run -- node ./configs/kinobi.cjs",
-    "validator": "CI=1 dotenvx run -- amman start --config ./configs/validator.cjs",
-    "validator:debug": "dotenvx run -- amman start --config ./configs/validator.cjs",
-    "validator:logs": "CI=1 dotenvx run -- amman logs",
-    "validator:stop": "dotenvx run -- amman stop"
+    "programs:build": "dotenvx run -q -f .env.local -f .env -- ./configs/scripts/program/build.sh",
+    "programs:test": "dotenvx run -q -f .env.local -f .env -- RUST_LOG=error ./configs/scripts/program/test.sh",
+    "programs:debug": "dotenvx run -q -f .env.local -f .env -- ./configs/scripts/program/test.sh",
+    "programs:clean": "dotenvx run -q -f .env.local -f .env -- ./configs/scripts/program/clean.sh",
+    "clients:rust:test": "dotenvx run -q -f .env.local -f .env -- ./configs/scripts/client/test-rust.sh",
+    "clients:js:test": "dotenvx run -q -f .env.local -f .env -- ./configs/scripts/client/test-js.sh",
+    "generate": "dotenvx run -q -f .env.local -f .env -- pnpm generate:idls && pnpm generate:clients",
+    "generate:idls": "dotenvx run -q -f .env.local -f .env -- node ./configs/shank.cjs",
+    "generate:clients": "dotenvx run -q -f .env.local -f .env -- node ./configs/kinobi.cjs",
+    "validator": "CI=1 dotenvx run -q -f .env.local -f .env -- amman start --config ./configs/validator.cjs",
+    "validator:debug": "dotenvx run -q -f .env.local -f .env -- amman start --config ./configs/validator.cjs",
+    "validator:logs": "CI=1 dotenvx run -q -f .env.local -f .env -- amman logs",
+    "validator:stop": "dotenvx run -q -f .env.local -f .env -- amman stop"
   },
   "devDependencies": {
     "@dotenvx/dotenvx": "^0.20.2",
