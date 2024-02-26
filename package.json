@@ -1,8 +1,6 @@
 {
   "private": true,
   "scripts": {
-    "dummy:js": "dotenvx run -- node ./configs/dummy.cjs",
-    "dummy:sh": "dotenvx run -- ./configs/dummy.sh",
     "programs:build": "dotenvx run -- ./configs/scripts/program/build.sh",
     "programs:test": "dotenvx run -- RUST_LOG=error ./configs/scripts/program/test.sh",
     "programs:debug": "dotenvx run -- ./configs/scripts/program/test.sh",
