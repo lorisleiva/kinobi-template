@@ -1,8 +1,7 @@
 #!/bin/bash
 
 # Export the working directory.
-SCRIPT_DIR=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" &>/dev/null && pwd)
-cd $(dirname $(dirname $SCRIPT_DIR))
+cd $(dirname $(dirname $(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" &>/dev/null && pwd)))
 export WORKING_DIR=$(pwd)
 
 # Export variables.
