@@ -9,6 +9,7 @@ cd $WORKING_DIR
 
 # Remove the programs output directory.
 rm -rf $PROGRAMS_OUTPUT_DIR
+rm -rf target
 
 # Remove the target directory for each program.
 for p in ${PROGRAMS[@]}; do
