@@ -36,6 +36,7 @@ import {
   getStructEncoder,
 } from '@solana/codecs-data-structures';
 import { getU32Decoder, getU32Encoder } from '@solana/codecs-numbers';
+import { CounterSeeds, findCounterPda } from '../pdas';
 import { Key, getKeyDecoder, getKeyEncoder } from '../types';
 
 export type Counter<TAddress extends string = string> = Account<
@@ -140,4 +141,24 @@ export async function fetchAllMaybeCounter(
 
 export function getCounterSize(): number {
   return 37;
+}
+
+export async function fetchCounterFromSeeds(
+  rpc: Parameters<typeof fetchEncodedAccount>[0],
+  seeds: CounterSeeds,
+  config: FetchAccountConfig & { programAddress?: Address } = {}
+): Promise<Counter> {
+  const maybeAccount = await fetchMaybeCounterFromSeeds(rpc, seeds, config);
+  assertAccountExists(maybeAccount);
+  return maybeAccount;
+}
+
+export async function fetchMaybeCounterFromSeeds(
+  rpc: Parameters<typeof fetchEncodedAccount>[0],
+  seeds: CounterSeeds,
+  config: FetchAccountConfig & { programAddress?: Address } = {}
+): Promise<MaybeCounter> {
+  const { programAddress, ...fetchConfig } = config;
+  const [address] = await findCounterPda(seeds, { programAddress });
+  return fetchMaybeCounter(rpc, address, fetchConfig);
 }

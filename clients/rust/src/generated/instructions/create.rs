@@ -10,6 +10,8 @@ use borsh::BorshSerialize;
 
 /// Accounts.
 pub struct Create {
+    /// The program derived address of the counter account to create (seeds: ['counter', authority])
+    pub counter: solana_program::pubkey::Pubkey,
     /// The authority of the counter
     pub authority: solana_program::pubkey::Pubkey,
     /// The account paying for the storage fees
@@ -27,7 +29,11 @@ impl Create {
         &self,
         remaining_accounts: &[solana_program::instruction::AccountMeta],
     ) -> solana_program::instruction::Instruction {
-        let mut accounts = Vec::with_capacity(3 + remaining_accounts.len());
+        let mut accounts = Vec::with_capacity(4 + remaining_accounts.len());
+        accounts.push(solana_program::instruction::AccountMeta::new(
+            self.counter,
+            false,
+        ));
         accounts.push(solana_program::instruction::AccountMeta::new_readonly(
             self.authority,
             true,
@@ -65,11 +71,13 @@ impl CreateInstructionData {
 ///
 /// ### Accounts:
 ///
-///   0. `[signer]` authority
-///   1. `[writable, signer]` payer
-///   2. `[optional]` system_program (default to `11111111111111111111111111111111`)
+///   0. `[writable]` counter
+///   1. `[signer]` authority
+///   2. `[writable, signer]` payer
+///   3. `[optional]` system_program (default to `11111111111111111111111111111111`)
 #[derive(Default)]
 pub struct CreateBuilder {
+    counter: Option<solana_program::pubkey::Pubkey>,
     authority: Option<solana_program::pubkey::Pubkey>,
     payer: Option<solana_program::pubkey::Pubkey>,
     system_program: Option<solana_program::pubkey::Pubkey>,
@@ -79,6 +87,12 @@ pub struct CreateBuilder {
 impl CreateBuilder {
     pub fn new() -> Self {
         Self::default()
+    }
+    /// The program derived address of the counter account to create (seeds: ['counter', authority])
+    #[inline(always)]
+    pub fn counter(&mut self, counter: solana_program::pubkey::Pubkey) -> &mut Self {
+        self.counter = Some(counter);
+        self
     }
     /// The authority of the counter
     #[inline(always)]
@@ -120,6 +134,7 @@ impl CreateBuilder {
     #[allow(clippy::clone_on_copy)]
     pub fn instruction(&self) -> solana_program::instruction::Instruction {
         let accounts = Create {
+            counter: self.counter.expect("counter is not set"),
             authority: self.authority.expect("authority is not set"),
             payer: self.payer.expect("payer is not set"),
             system_program: self
@@ -133,6 +148,8 @@ impl CreateBuilder {
 
 /// `create` CPI accounts.
 pub struct CreateCpiAccounts<'a, 'b> {
+    /// The program derived address of the counter account to create (seeds: ['counter', authority])
+    pub counter: &'b solana_program::account_info::AccountInfo<'a>,
     /// The authority of the counter
     pub authority: &'b solana_program::account_info::AccountInfo<'a>,
     /// The account paying for the storage fees
@@ -145,6 +162,8 @@ pub struct CreateCpiAccounts<'a, 'b> {
 pub struct CreateCpi<'a, 'b> {
     /// The program to invoke.
     pub __program: &'b solana_program::account_info::AccountInfo<'a>,
+    /// The program derived address of the counter account to create (seeds: ['counter', authority])
+    pub counter: &'b solana_program::account_info::AccountInfo<'a>,
     /// The authority of the counter
     pub authority: &'b solana_program::account_info::AccountInfo<'a>,
     /// The account paying for the storage fees
@@ -160,6 +179,7 @@ impl<'a, 'b> CreateCpi<'a, 'b> {
     ) -> Self {
         Self {
             __program: program,
+            counter: accounts.counter,
             authority: accounts.authority,
             payer: accounts.payer,
             system_program: accounts.system_program,
@@ -198,7 +218,11 @@ impl<'a, 'b> CreateCpi<'a, 'b> {
             bool,
         )],
     ) -> solana_program::entrypoint::ProgramResult {
-        let mut accounts = Vec::with_capacity(3 + remaining_accounts.len());
+        let mut accounts = Vec::with_capacity(4 + remaining_accounts.len());
+        accounts.push(solana_program::instruction::AccountMeta::new(
+            *self.counter.key,
+            false,
+        ));
         accounts.push(solana_program::instruction::AccountMeta::new_readonly(
             *self.authority.key,
             true,
@@ -225,8 +249,9 @@ impl<'a, 'b> CreateCpi<'a, 'b> {
             accounts,
             data,
         };
-        let mut account_infos = Vec::with_capacity(3 + 1 + remaining_accounts.len());
+        let mut account_infos = Vec::with_capacity(4 + 1 + remaining_accounts.len());
         account_infos.push(self.__program.clone());
+        account_infos.push(self.counter.clone());
         account_infos.push(self.authority.clone());
         account_infos.push(self.payer.clone());
         account_infos.push(self.system_program.clone());
@@ -246,9 +271,10 @@ impl<'a, 'b> CreateCpi<'a, 'b> {
 ///
 /// ### Accounts:
 ///
-///   0. `[signer]` authority
-///   1. `[writable, signer]` payer
-///   2. `[]` system_program
+///   0. `[writable]` counter
+///   1. `[signer]` authority
+///   2. `[writable, signer]` payer
+///   3. `[]` system_program
 pub struct CreateCpiBuilder<'a, 'b> {
     instruction: Box<CreateCpiBuilderInstruction<'a, 'b>>,
 }
@@ -257,12 +283,22 @@ impl<'a, 'b> CreateCpiBuilder<'a, 'b> {
     pub fn new(program: &'b solana_program::account_info::AccountInfo<'a>) -> Self {
         let instruction = Box::new(CreateCpiBuilderInstruction {
             __program: program,
+            counter: None,
             authority: None,
             payer: None,
             system_program: None,
             __remaining_accounts: Vec::new(),
         });
         Self { instruction }
+    }
+    /// The program derived address of the counter account to create (seeds: ['counter', authority])
+    #[inline(always)]
+    pub fn counter(
+        &mut self,
+        counter: &'b solana_program::account_info::AccountInfo<'a>,
+    ) -> &mut Self {
+        self.instruction.counter = Some(counter);
+        self
     }
     /// The authority of the counter
     #[inline(always)]
@@ -332,6 +368,8 @@ impl<'a, 'b> CreateCpiBuilder<'a, 'b> {
         let instruction = CreateCpi {
             __program: self.instruction.__program,
 
+            counter: self.instruction.counter.expect("counter is not set"),
+
             authority: self.instruction.authority.expect("authority is not set"),
 
             payer: self.instruction.payer.expect("payer is not set"),
@@ -350,6 +388,7 @@ impl<'a, 'b> CreateCpiBuilder<'a, 'b> {
 
 struct CreateCpiBuilderInstruction<'a, 'b> {
     __program: &'b solana_program::account_info::AccountInfo<'a>,
+    counter: Option<&'b solana_program::account_info::AccountInfo<'a>>,
     authority: Option<&'b solana_program::account_info::AccountInfo<'a>>,
     payer: Option<&'b solana_program::account_info::AccountInfo<'a>>,
     system_program: Option<&'b solana_program::account_info::AccountInfo<'a>>,

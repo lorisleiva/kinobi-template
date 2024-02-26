@@ -8,11 +8,31 @@ const programDir = path.join(__dirname, "..", "program");
 // Instanciate Kinobi.
 const kinobi = k.createFromIdls([path.join(programDir, "acme_counter.json")]);
 
+// Update accounts.
+kinobi.update(
+  k.updateAccountsVisitor({
+    counter: {
+      seeds: [
+        k.constantPdaSeedNodeFromString("counter"),
+        k.variablePdaSeedNode(
+          "authority",
+          k.publicKeyTypeNode(),
+          "The authority of the counter account"
+        ),
+      ],
+    },
+  })
+);
+
 // Update instructions.
 kinobi.update(
   k.updateInstructionsVisitor({
     create: {
       byteDeltas: [k.instructionByteDeltaNode(k.accountLinkNode("counter"))],
+      accounts: {
+        counter: { defaultValue: k.pdaValueNode("counter") },
+        payer: { defaultValue: k.accountValueNode("authority") },
+      },
     },
   })
 );

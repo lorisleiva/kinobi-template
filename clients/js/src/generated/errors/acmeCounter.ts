@@ -7,12 +7,28 @@
  */
 
 export const enum AcmeCounterProgramErrorCode {
-  /** InvalidSystemProgram: Invalid System Program */
-  INVALID_SYSTEM_PROGRAM = 0x0, // 0
-  /** DeserializationError: Error deserializing account */
-  DESERIALIZATION_ERROR = 0x1, // 1
-  /** SerializationError: Error serializing account */
-  SERIALIZATION_ERROR = 0x2, // 2
+  /** DeserializationError: Error deserializing an account */
+  DESERIALIZATION_ERROR = 0x0, // 0
+  /** SerializationError: Error serializing an account */
+  SERIALIZATION_ERROR = 0x1, // 1
+  /** InvalidProgramOwner: Invalid program owner. This likely mean the provided account does not exist */
+  INVALID_PROGRAM_OWNER = 0x2, // 2
+  /** InvalidPda: Invalid PDA derivation */
+  INVALID_PDA = 0x3, // 3
+  /** ExpectedEmptyAccount: Expected empty account */
+  EXPECTED_EMPTY_ACCOUNT = 0x4, // 4
+  /** ExpectedNonEmptyAccount: Expected non empty account */
+  EXPECTED_NON_EMPTY_ACCOUNT = 0x5, // 5
+  /** ExpectedSignerAccount: Expected signer account */
+  EXPECTED_SIGNER_ACCOUNT = 0x6, // 6
+  /** ExpectedWritableAccount: Expected writable account */
+  EXPECTED_WRITABLE_ACCOUNT = 0x7, // 7
+  /** AccountMismatch: Account mismatch */
+  ACCOUNT_MISMATCH = 0x8, // 8
+  /** InvalidAccountKey: Invalid account key */
+  INVALID_ACCOUNT_KEY = 0x9, // 9
+  /** NumericalOverflow: Numerical overflow */
+  NUMERICAL_OVERFLOW = 0xa, // 10
 }
 
 export class AcmeCounterProgramError extends Error {
@@ -39,17 +55,49 @@ let acmeCounterProgramErrorCodeMap:
   | undefined;
 if (__DEV__) {
   acmeCounterProgramErrorCodeMap = {
-    [AcmeCounterProgramErrorCode.INVALID_SYSTEM_PROGRAM]: [
-      'InvalidSystemProgram',
-      `Invalid System Program`,
-    ],
     [AcmeCounterProgramErrorCode.DESERIALIZATION_ERROR]: [
       'DeserializationError',
-      `Error deserializing account`,
+      `Error deserializing an account`,
     ],
     [AcmeCounterProgramErrorCode.SERIALIZATION_ERROR]: [
       'SerializationError',
-      `Error serializing account`,
+      `Error serializing an account`,
+    ],
+    [AcmeCounterProgramErrorCode.INVALID_PROGRAM_OWNER]: [
+      'InvalidProgramOwner',
+      `Invalid program owner. This likely mean the provided account does not exist`,
+    ],
+    [AcmeCounterProgramErrorCode.INVALID_PDA]: [
+      'InvalidPda',
+      `Invalid PDA derivation`,
+    ],
+    [AcmeCounterProgramErrorCode.EXPECTED_EMPTY_ACCOUNT]: [
+      'ExpectedEmptyAccount',
+      `Expected empty account`,
+    ],
+    [AcmeCounterProgramErrorCode.EXPECTED_NON_EMPTY_ACCOUNT]: [
+      'ExpectedNonEmptyAccount',
+      `Expected non empty account`,
+    ],
+    [AcmeCounterProgramErrorCode.EXPECTED_SIGNER_ACCOUNT]: [
+      'ExpectedSignerAccount',
+      `Expected signer account`,
+    ],
+    [AcmeCounterProgramErrorCode.EXPECTED_WRITABLE_ACCOUNT]: [
+      'ExpectedWritableAccount',
+      `Expected writable account`,
+    ],
+    [AcmeCounterProgramErrorCode.ACCOUNT_MISMATCH]: [
+      'AccountMismatch',
+      `Account mismatch`,
+    ],
+    [AcmeCounterProgramErrorCode.INVALID_ACCOUNT_KEY]: [
+      'InvalidAccountKey',
+      `Invalid account key`,
+    ],
+    [AcmeCounterProgramErrorCode.NUMERICAL_OVERFLOW]: [
+      'NumericalOverflow',
+      `Numerical overflow`,
     ],
   };
 }

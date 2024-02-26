@@ -1,6 +1,10 @@
 import { appendTransactionInstruction, pipe } from '@solana/web3.js';
 import test from 'ava';
-import { Counter, fetchCounter, getCreateInstruction } from '../src';
+import {
+  Counter,
+  fetchCounterFromSeeds,
+  getCreateInstructionAsync,
+} from '../src';
 import {
   createDefaultSolanaClient,
   createDefaultTransaction,
@@ -14,7 +18,7 @@ test('it creates a new counter account', async (t) => {
   const authority = await generateKeyPairSignerWithSol(client);
 
   // When
-  const createIx = getCreateInstruction({ authority, payer: authority });
+  const createIx = await getCreateInstructionAsync({ authority });
   await pipe(
     await createDefaultTransaction(client, authority),
     (tx) => appendTransactionInstruction(createIx, tx),
@@ -22,7 +26,9 @@ test('it creates a new counter account', async (t) => {
   );
 
   // Then
-  const counter = await fetchCounter(client.rpc, authority.address);
+  const counter = await fetchCounterFromSeeds(client.rpc, {
+    authority: authority.address,
+  });
   t.like(counter, <Counter>{
     data: {
       authority: authority.address,
