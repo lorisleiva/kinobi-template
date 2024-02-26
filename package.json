@@ -1,0 +1,28 @@
+{
+  "private": true,
+  "scripts": {
+    "dummy:js": "dotenvx run -- node ./configs/dummy.cjs",
+    "dummy:sh": "dotenvx run -- ./configs/dummy.sh",
+    "programs:build": "dotenvx run -- ./configs/scripts/program/build.sh",
+    "programs:test": "dotenvx run -- RUST_LOG=error ./configs/scripts/program/test.sh",
+    "programs:debug": "dotenvx run -- ./configs/scripts/program/test.sh",
+    "programs:clean": "dotenvx run -- ./configs/scripts/program/clean.sh",
+    "clients:rust:test": "dotenvx run -- ./configs/scripts/client/test-rust.sh",
+    "clients:js:test": "dotenvx run -- ./configs/scripts/client/test-js.sh",
+    "generate": "dotenvx run -- pnpm generate:idls && pnpm generate:clients",
+    "generate:idls": "dotenvx run -- node ./configs/shank.cjs",
+    "generate:clients": "dotenvx run -- node ./configs/kinobi.cjs",
+    "validator": "dotenvx run -- CI=1 amman start --config ./configs/validator.cjs",
+    "validator:debug": "dotenvx run -- amman start --config ./configs/validator.cjs",
+    "validator:logs": "dotenvx run -- CI=1 amman logs",
+    "validator:stop": "dotenvx run -- amman stop"
+  },
+  "devDependencies": {
+    "@dotenvx/dotenvx": "^0.20.2",
+    "@metaplex-foundation/amman": "^0.12.1",
+    "@metaplex-foundation/kinobi": "^0.17.4",
+    "@metaplex-foundation/shank-js": "^0.1.5",
+    "typescript": "^5.3.3"
+  },
+  "packageManager": "pnpm@8.9.0"
+}
