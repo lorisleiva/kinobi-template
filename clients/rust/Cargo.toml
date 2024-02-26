@@ -1,5 +1,5 @@
 [package]
-name = "acme-counter"
+name = "acme-counter-client"
 version = "0.1.0"
 edition = "2021"
 readme = "README.md"
