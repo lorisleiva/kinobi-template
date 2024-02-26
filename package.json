@@ -12,9 +12,9 @@
     "generate": "dotenvx run -- pnpm generate:idls && pnpm generate:clients",
     "generate:idls": "dotenvx run -- node ./configs/shank.cjs",
     "generate:clients": "dotenvx run -- node ./configs/kinobi.cjs",
-    "validator": "dotenvx run -- CI=1 amman start --config ./configs/validator.cjs",
+    "validator": "CI=1 dotenvx run -- amman start --config ./configs/validator.cjs",
     "validator:debug": "dotenvx run -- amman start --config ./configs/validator.cjs",
-    "validator:logs": "dotenvx run -- CI=1 amman logs",
+    "validator:logs": "CI=1 dotenvx run -- amman logs",
     "validator:stop": "dotenvx run -- amman stop"
   },
   "devDependencies": {

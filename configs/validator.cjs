@@ -1,33 +1,32 @@
 const path = require("path");
 
-const programDir = path.join(__dirname, "..", "programs");
-
-function getProgram(programBinary) {
-  return path.join(programDir, ".bin", programBinary);
-}
-
 module.exports = {
   validator: {
     commitment: "processed",
     programs: [
+      ...getExternalPrograms(),
       {
-        label: "Mpl Project Name",
+        label: "Counter",
         programId: "MyProgram1111111111111111111111111111111111",
-        deployPath: getProgram("mpl_project_name_program.so"),
-      },
-      // Below are external programs that should be included in the local validator.
-      // You may configure which ones to fetch from the cluster when building
-      // programs within the `configs/program-scripts/dump.sh` script.
-      {
-        label: "Token Metadata",
-        programId: "metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s",
-        deployPath: getProgram("mpl_token_metadata.so"),
-      },
-      {
-        label: "SPL Noop",
-        programId: "noopb9bkMVfRPU8AsbpTUg8AQkHtKwMYZiFUjNRtMmV",
-        deployPath: getProgram("spl_noop.so"),
+        deployPath: getProgram("acme_counter.so"),
       },
     ],
   },
 };
+
+function getProgram(programBinary) {
+  return path.join(__dirname, "..", process.env.PROGRAMS_OUTPUT, programBinary);
+}
+
+function getExternalPrograms() {
+  const addresses = process.env.PROGRAMS_EXTERNAL_ADDRESSES.split(/\s+/);
+  const binaries = process.env.PROGRAMS_EXTERNAL_BINARIES.split(/\s+/);
+  return addresses.map((address, index) => {
+    const binary = binaries[index];
+    return {
+      label: binary.replace(/\.so$/, ""),
+      programId: address,
+      deployPath: getProgram(binary),
+    };
+  });
+}
