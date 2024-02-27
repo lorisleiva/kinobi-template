@@ -18,12 +18,7 @@ if [ ! -z "$ARGS" ]; then
     ARGS=$*
 fi
 
-# Create the output directory if it doesn't exist.
-if [ ! -d ${PROGRAMS_OUTPUT_DIR} ]; then
-    mkdir ${PROGRAMS_OUTPUT_DIR}
-fi
-
 for p in ${PROGRAMS[@]}; do
     cd ${WORKING_DIR}/${p}
-    cargo build-sbf --sbf-out-dir ${PROGRAMS_OUTPUT_DIR} $ARGS
+    cargo build-sbf $ARGS
 done

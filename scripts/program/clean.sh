@@ -8,7 +8,7 @@ source $(dirname $SCRIPT_DIR)/utils.sh
 cd $WORKING_DIR
 
 # Remove the programs output directory.
-rm -rf $PROGRAMS_OUTPUT_DIR
+rm -rf $PROGRAMS_EXTERNAL_OUTPUT_DIR
 rm -rf target
 
 # Remove the target directory for each program.

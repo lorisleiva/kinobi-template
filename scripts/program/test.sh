@@ -11,11 +11,7 @@ source ${SCRIPT_DIR}/dump.sh
 cd $WORKING_DIR
 
 if [ ! -z "$PROGRAM" ]; then
-    PROGRAMS='["'${PROGRAM}'"]'
-fi
-
-if [ -z "$PROGRAMS" ]; then
-    PROGRAMS="$(cat .github/.env | grep "PROGRAMS" | cut -d '=' -f 2)"
+    PROGRAMS=$PROGRAM
 fi
 
 # Get all command-line arguments.
@@ -23,23 +19,20 @@ ARGS=$*
 
 # command-line arguments override env variable
 if [ ! -z "$ARGS" ]; then
-    PROGRAMS="[\"${1}\"]"
+    PROGRAMS=$1
     shift
     ARGS=$*
 fi
 
-PROGRAMS=$(echo $PROGRAMS | jq -c '.[]' | sed 's/"//g')
-
 WORKING_DIR=$(pwd)
 SOLFMT="solfmt"
-export SBF_OUT_DIR="${WORKING_DIR}/${OUTPUT}"
 
 for p in ${PROGRAMS[@]}; do
     cd ${WORKING_DIR}/programs/${p}
 
     if [ ! "$(command -v $SOLFMT)" = "" ]; then
-        CARGO_TERM_COLOR=always cargo test-sbf --sbf-out-dir ${WORKING_DIR}/${OUTPUT} ${ARGS} 2>&1 | ${SOLFMT}
+        CARGO_TERM_COLOR=always cargo test-sbf ${ARGS} 2>&1 | ${SOLFMT}
     else
-        RUST_LOG=error cargo test-sbf --sbf-out-dir ${WORKING_DIR}/${OUTPUT} ${ARGS}
+        RUST_LOG=error cargo test-sbf ${ARGS}
     fi
 done
