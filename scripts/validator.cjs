@@ -1,4 +1,5 @@
 const path = require("path");
+const fs = require("fs");
 
 module.exports = {
   validator: {
@@ -8,14 +9,22 @@ module.exports = {
 };
 
 function getPrograms() {
+  const folders = process.env.PROGRAMS.split(/\s+/);
   const addresses = process.env.PROGRAMS_ADDRESSES.split(/\s+/);
-  const binaries = process.env.PROGRAMS_BINARIES.split(/\s+/);
   const binaryDir = path.join(__dirname, "..", "target", "deploy");
-  return addresses.map((address, index) => ({
-    label: binaries[index].replace(/\.so$/, ""),
-    programId: address,
-    deployPath: path.join(binaryDir, binaries[index]),
-  }));
+  return folders.map((folder, index) => {
+    const cargoFile = fs.readFileSync(
+      path.join(__dirname, "..", folder, "Cargo.toml"),
+      "utf8"
+    );
+    const name = cargoFile.match(/name = "([^"]+)"/)[1].replace(/-/g, "_");
+    const binary = `${name}.so`;
+    return {
+      label: name,
+      programId: addresses[index],
+      deployPath: path.join(binaryDir, binary),
+    };
+  });
 }
 
 function getExternalPrograms() {
