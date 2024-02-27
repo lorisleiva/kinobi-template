@@ -10,7 +10,12 @@ source ${SCRIPT_DIR}/dump.sh
 # Go to the working directory.
 cd $WORKING_DIR
 
-# Get command-line arguments.
+# PROGRAM override.
+if [ ! -z "$PROGRAM" ]; then
+    PROGRAMS=$PROGRAM
+fi
+
+# Argument override.
 ARGS=$*
 if [ ! -z "$ARGS" ]; then
     PROGRAMS=$1
