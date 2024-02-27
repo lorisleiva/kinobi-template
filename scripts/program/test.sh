@@ -23,13 +23,17 @@ if [ ! -z "$ARGS" ]; then
     ARGS=$*
 fi
 
+# Test the programs.
 SOLFMT="solfmt"
 for p in ${PROGRAMS[@]}; do
-    cd ${WORKING_DIR}/programs/${p}
-
-    if [ ! "$(command -v $SOLFMT)" = "" ]; then
-        CARGO_TERM_COLOR=always cargo test-sbf ${ARGS} 2>&1 | ${SOLFMT}
+    if [ -d ${WORKING_DIR}/${p} ]; then
+        cd ${WORKING_DIR}/${p}
+        if [ ! "$(command -v $SOLFMT)" = "" ]; then
+            CARGO_TERM_COLOR=always cargo test-sbf ${ARGS} 2>&1 | ${SOLFMT}
+        else
+            RUST_LOG=error cargo test-sbf ${ARGS}
+        fi
     else
-        RUST_LOG=error cargo test-sbf ${ARGS}
+        echo $(YLW "Program not found at: ${WORKING_DIR}/${p}.")
     fi
 done

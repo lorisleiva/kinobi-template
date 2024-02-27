@@ -23,7 +23,12 @@ if [ ! -z "$ARGS" ]; then
     ARGS=$*
 fi
 
+# Build the programs.
 for p in ${PROGRAMS[@]}; do
-    cd ${WORKING_DIR}/${p}
-    cargo build-sbf $ARGS
+    if [ -d ${WORKING_DIR}/${p} ]; then
+        cd ${WORKING_DIR}/${p}
+        cargo build-sbf $ARGS
+    else
+        echo $(YLW "Program not found at: ${WORKING_DIR}/${p}.")
+    fi
 done
