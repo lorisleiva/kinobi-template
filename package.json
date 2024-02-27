@@ -1,12 +1,12 @@
 {
   "private": true,
   "scripts": {
-    "programs:build": "dotenvx run -q -- ./configs/scripts/program/build.sh",
-    "programs:test": "dotenvx run -q -- RUST_LOG=error ./configs/scripts/program/test.sh",
-    "programs:debug": "dotenvx run -q -- ./configs/scripts/program/test.sh",
-    "programs:clean": "dotenvx run -q -- ./configs/scripts/program/clean.sh",
-    "clients:rust:test": "dotenvx run -q -- ./configs/scripts/client/test-rust.sh",
-    "clients:js:test": "dotenvx run -q -- ./configs/scripts/client/test-js.sh",
+    "programs:build": "dotenvx run -q -- ./scripts/program/build.sh",
+    "programs:test": "RUST_LOG=error dotenvx run -q -- ./scripts/program/test.sh",
+    "programs:debug": "dotenvx run -q -- ./scripts/program/test.sh",
+    "programs:clean": "dotenvx run -q -- ./scripts/program/clean.sh",
+    "clients:rust:test": "dotenvx run -q -- ./scripts/client/test-rust.sh",
+    "clients:js:test": "dotenvx run -q -- ./scripts/client/test-js.sh",
     "generate": "dotenvx run -q -- pnpm generate:idls && pnpm generate:clients",
     "generate:idls": "dotenvx run -q -- node ./configs/shank.cjs",
     "generate:clients": "dotenvx run -q -- node ./configs/kinobi.cjs",
