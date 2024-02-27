@@ -48,7 +48,7 @@ copy_from_chain() {
 # Dump external programs binaries if needed.
 for i in ${!PROGRAMS_EXTERNAL_ADDRESSES_ARRAY[@]}; do
     ADDRESS=${PROGRAMS_EXTERNAL_ADDRESSES_ARRAY[$i]}
-    BINARY=${PROGRAMS_EXTERNAL_BINARIES_ARRAY[$i]}
+    BINARY=${PROGRAMS_EXTERNAL_ADDRESSES_ARRAY[$i]}.so
 
     if [ ! -f "${PROGRAMS_EXTERNAL_OUTPUT_DIR}/${BINARY}" ]; then
         copy_from_chain "${ADDRESS}" "${BINARY}"
