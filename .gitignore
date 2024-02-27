@@ -7,7 +7,7 @@ node_modules
 test-ledger
 dist
 .amman
-.crates
+.cargo
 .bin
 .programs
 .env.*
