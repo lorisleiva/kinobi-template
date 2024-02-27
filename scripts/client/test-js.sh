@@ -7,8 +7,5 @@ source $(dirname $SCRIPT_DIR)/utils.sh
 # Go to the JS client directory.
 cd ${WORKING_DIR}/clients/js
 
-# Get all command-line arguments.
-ARGS=$*
-
 # Build the client and run the tests.
-pnpm install && pnpm build && pnpm test ${ARGS}
+pnpm install && pnpm build && pnpm test $*
