@@ -3,24 +3,31 @@ const path = require("path");
 module.exports = {
   validator: {
     commitment: "processed",
-    programs: getAllPrograms(),
+    programs: [...getPrograms(), ...getExternalPrograms()],
   },
 };
 
-function getAllPrograms() {
-  const addresses = `${process.env.PROGRAMS_ADDRESSES} ${process.env.PROGRAMS_EXTERNAL_ADDRESSES}`;
-  const binaries = `${process.env.PROGRAMS_BINARIES} ${process.env.PROGRAMS_EXTERNAL_BINARIES}`;
-  const binariesArray = binaries.split(/\s+/);
-  return addresses.split(/\s+/).map((address, index) => {
-    const binary = binariesArray[index];
-    return {
-      label: binary.replace(/\.so$/, ""),
-      programId: address,
-      deployPath: getBinaryPath(binary),
-    };
-  });
+function getPrograms() {
+  const addresses = process.env.PROGRAMS_ADDRESSES.split(/\s+/);
+  const binaries = process.env.PROGRAMS_BINARIES.split(/\s+/);
+  const binaryDir = path.join(__dirname, "..", "target", "deploy");
+  return addresses.map((address, index) => ({
+    label: binaries[index].replace(/\.so$/, ""),
+    programId: address,
+    deployPath: path.join(binaryDir, binaries[index]),
+  }));
 }
 
-function getBinaryPath(programBinary) {
-  return path.join(__dirname, "..", process.env.PROGRAMS_OUTPUT, programBinary);
+function getExternalPrograms() {
+  const addresses = process.env.PROGRAMS_EXTERNAL_ADDRESSES.split(/\s+/);
+  const binaryDir = path.join(
+    __dirname,
+    "..",
+    process.env.PROGRAMS_EXTERNAL_OUTPUT
+  );
+  return addresses.map((address) => ({
+    label: address,
+    programId: address,
+    deployPath: path.join(binaryDir, `${address}.so`),
+  }));
 }
