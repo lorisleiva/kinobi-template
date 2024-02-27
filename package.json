@@ -5,6 +5,8 @@
     "programs:test": "RUST_LOG=error dotenvx run -q -- ./scripts/program/test.sh",
     "programs:debug": "dotenvx run -q -- ./scripts/program/test.sh",
     "programs:clean": "dotenvx run -q -- ./scripts/program/clean.sh",
+    "programs:format": "dotenvx run -q -- ./scripts/program/format.sh",
+    "programs:lint": "dotenvx run -q -- ./scripts/program/lint.sh",
     "clients:rust:test": "dotenvx run -q -- ./scripts/client/test-rust.sh",
     "clients:js:test": "dotenvx run -q -- ./scripts/client/test-js.sh",
     "generate": "dotenvx run -q -- pnpm generate:idls && pnpm generate:clients",

@@ -18,6 +18,6 @@ for p in ${PROGRAMS[@]}; do
             RUST_LOG=error cargo test-sbf $*
         fi
     else
-        echo $(YLW "Program not found at: ${WORKING_DIR}/${p}.")
+        echo $(YLW "Program not found: ${WORKING_DIR}/${p}")
     fi
 done
