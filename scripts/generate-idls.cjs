@@ -10,6 +10,7 @@ getPrograms().forEach((program) => {
     programName: program.name,
     programId: program.address,
     idlDir: program.programDir,
+    idlName: "idl",
     programDir: program.programDir,
     binaryInstallDir,
   });
