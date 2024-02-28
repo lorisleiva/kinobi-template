@@ -19,6 +19,7 @@
   },
   "devDependencies": {
     "@dotenvx/dotenvx": "^0.20.2",
+    "@iarna/toml": "^2.2.5",
     "@metaplex-foundation/amman": "^0.12.1",
     "@metaplex-foundation/kinobi": "^0.17.4",
     "@metaplex-foundation/shank-js": "^0.1.5",

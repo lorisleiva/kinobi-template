@@ -1,5 +1,6 @@
 const path = require("path");
 const fs = require("fs");
+const TOML = require("@iarna/toml");
 
 module.exports = {
   validator: {
@@ -10,19 +11,16 @@ module.exports = {
 
 function getPrograms() {
   const folders = process.env.PROGRAMS.split(/\s+/);
-  const addresses = process.env.PROGRAMS_ADDRESSES.split(/\s+/);
   const binaryDir = path.join(__dirname, "..", "target", "deploy");
-  return folders.map((folder, index) => {
-    const cargoFile = fs.readFileSync(
-      path.join(__dirname, "..", folder, "Cargo.toml"),
-      "utf8"
+  return folders.map((folder) => {
+    const cargo = TOML.parse(
+      fs.readFileSync(path.join(__dirname, "..", folder, "Cargo.toml"), "utf8")
     );
-    const name = cargoFile.match(/name = "([^"]+)"/)[1].replace(/-/g, "_");
-    const binary = `${name}.so`;
+    const name = cargo.package.name.replace(/-/g, "_");
     return {
       label: name,
-      programId: addresses[index],
-      deployPath: path.join(binaryDir, binary),
+      programId: cargo.package.metadata.solana["program-id"],
+      deployPath: path.join(binaryDir, `${name}.so`),
     };
   });
 }

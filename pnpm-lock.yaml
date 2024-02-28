@@ -8,6 +8,9 @@ devDependencies:
   '@dotenvx/dotenvx':
     specifier: ^0.20.2
     version: 0.20.2
+  '@iarna/toml':
+    specifier: ^2.2.5
+    version: 2.2.5
   '@metaplex-foundation/amman':
     specifier: ^0.12.1
     version: 0.12.1(typescript@5.3.3)
@@ -79,6 +82,10 @@ packages:
     resolution: {integrity: sha512-foQZKJig7Ob0BMAYBfcJk8d77QtOe7Wo4ox7ff1lQYoNNAb6jwcY1ncdoy2e9wQZzvNy7ODZCYJkK8kzmcAnAg==}
     dependencies:
       '@hapi/hoek': 9.3.0
+    dev: true
+
+  /@iarna/toml@2.2.5:
+    resolution: {integrity: sha512-trnsAYxU3xnS1gPHPyU961coFyLkh4gAD/0zQ5mymY4yOZ+CYvsPqUbOFSw0aDM4y0tV7tiFxL/1XfXPNC6IPg==}
     dev: true
 
   /@inquirer/checkbox@1.5.2:
