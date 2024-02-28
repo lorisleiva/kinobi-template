@@ -12,7 +12,7 @@ SOLFMT="solfmt"
 
 # Run the tests.
 if [ ! "$(command -v $SOLFMT)" = "" ]; then
-    CARGO_TERM_COLOR=always cargo test-sbf --sbf-out-dir ${PROGRAMS_OUTPUT_DIR} $* 2>&1 | ${SOLFMT}
+    CARGO_TERM_COLOR=always cargo test-sbf $* 2>&1 | ${SOLFMT}
 else
-    cargo test-sbf --sbf-out-dir ${PROGRAMS_OUTPUT_DIR} $*
+    cargo test-sbf $*
 fi
