@@ -1,3 +1,6 @@
 [workspace]
 resolver = "2"
 members = ["clients/rust", "program"]
+
+[workspace.metadata.solana]
+external-programs-output = "target/deploy"
