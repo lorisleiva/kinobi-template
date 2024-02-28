@@ -8,7 +8,7 @@ source $(dirname $SCRIPT_DIR)/utils.sh
 for p in ${PROGRAMS[@]}; do
     if [ -d ${WORKING_DIR}/${p} ]; then
         cd ${WORKING_DIR}/${p}
-        cargo fmt --check --all
+        cargo fmt $*
     else
         echo $(YLW "Program not found: ${WORKING_DIR}/${p}")
     fi
