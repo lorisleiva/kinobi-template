@@ -5,58 +5,62 @@ import {
   getExternalProgramOutputDir,
 } from "../utils.mjs";
 
-const addresses = getExternalProgramAddresses();
-if (addresses.length === 0) exit(1);
-
+// Get input from environment variables.
 const rpc = process.env.RPC ?? "https://api.mainnet-beta.solana.com";
 const outputDir = getExternalProgramOutputDir();
+await dump();
 
-echo(`Dumping external accounts to '${outputDir}':`);
+/** Dump external programs binaries if needed. */
+async function dump() {
+  // Ensure we have some external programs to dump.
+  const addresses = getExternalProgramAddresses();
+  if (addresses.length === 0) return;
+  echo(`Dumping external accounts to '${outputDir}':`);
 
-await Promise.all(
-  addresses.map(async (address) => {
-    const binary = `${address}.so`;
-    const hasBinary = await fs.exists(`${outputDir}/${binary}`);
+  // Copy the binaries from the chain or warn if they are different.
+  await Promise.all(
+    addresses.map(async (address) => {
+      const binary = `${address}.so`;
+      const hasBinary = await fs.exists(`${outputDir}/${binary}`);
 
-    if (!hasBinary) {
-      await copyFromChain(address, binary);
-      echo(`Wrote account data to ${outputDir}/${binary}`);
-      return;
-    }
+      if (!hasBinary) {
+        await copyFromChain(address, binary);
+        echo(`Wrote account data to ${outputDir}/${binary}`);
+        return;
+      }
 
-    await copyFromChain(address, `onchain-${binary}`);
-    const [onChainHash, localHash] = await Promise.all([
-      $`sha256sum -b ${outputDir}/onchain-${binary} | cut -d ' ' -f 1`.quiet(),
-      $`sha256sum -b ${outputDir}/${binary} | cut -d ' ' -f 1`.quiet(),
-    ]);
+      await copyFromChain(address, `onchain-${binary}`);
+      const [onChainHash, localHash] = await Promise.all([
+        $`sha256sum -b ${outputDir}/onchain-${binary} | cut -d ' ' -f 1`.quiet(),
+        $`sha256sum -b ${outputDir}/${binary} | cut -d ' ' -f 1`.quiet(),
+      ]);
 
-    if (onChainHash.toString() !== localHash.toString()) {
-      echo(
-        chalk.yellow("[ WARNING ]") +
-          ` on-chain and local binaries are different for '${binary}'`
-      );
-    } else {
-      echo(
-        chalk.green("[ SKIPPED ]") +
-          ` on-chain and local binaries are the same for '${binary}'`
-      );
-    }
+      if (onChainHash.toString() !== localHash.toString()) {
+        echo(
+          chalk.yellow("[ WARNING ]"),
+          `on-chain and local binaries are different for '${binary}'`
+        );
+      } else {
+        echo(
+          chalk.green("[ SKIPPED ]"),
+          `on-chain and local binaries are the same for '${binary}'`
+        );
+      }
 
-    await $`rm ${outputDir}/onchain-${binary}`.quiet();
-  })
-);
+      await $`rm ${outputDir}/onchain-${binary}`.quiet();
+    })
+  );
+}
 
+/** Helper function to copy external programs or accounts binaries from the chain. */
 async function copyFromChain(address, binary) {
   switch (binary.split(".").pop()) {
     case "bin":
-      await $`solana account -u ${rpc} ${address} -o ${outputDir}/${binary} >/dev/null`.quiet();
-      break;
+      return $`solana account -u ${rpc} ${address} -o ${outputDir}/${binary} >/dev/null`.quiet();
     case "so":
-      await $`solana program dump -u ${rpc} ${address} ${outputDir}/${binary} >/dev/null`.quiet();
-      break;
+      return $`solana program dump -u ${rpc} ${address} ${outputDir}/${binary} >/dev/null`.quiet();
     default:
       echo(chalk.red(`[  ERROR  ] unknown account type for '${binary}'`));
-      exit(1);
-      break;
+      await $`exit 1`;
   }
 }

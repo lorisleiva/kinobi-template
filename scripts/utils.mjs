@@ -1,7 +1,9 @@
 import "zx/globals";
 import { parse as parseToml } from "@iarna/toml";
 
-const workingDirectory = (await $`pwd`.quiet()).toString().trim();
+process.env.FORCE_COLOR = "1";
+
+export const workingDirectory = (await $`pwd`.quiet()).toString().trim();
 
 export function getAllProgramIdls() {
   return getAllProgramFolders().map((folder) =>
@@ -23,10 +25,28 @@ export function getExternalProgramAddresses() {
   return Array.from(new Set(addresses));
 }
 
+let didWarnAboutMissingPrograms = false;
 export function getProgramFolders() {
-  return process.env.PROGRAMS
+  const programs = process.env.PROGRAMS
     ? process.env.PROGRAMS.split(/\s+/)
     : getAllProgramFolders();
+  const filteredPrograms = programs.filter((program) =>
+    fs.existsSync(path.join(workingDirectory, program))
+  );
+
+  if (
+    filteredPrograms.length !== programs.length &&
+    !didWarnAboutMissingPrograms
+  ) {
+    didWarnAboutMissingPrograms = true;
+    programs
+      .filter((program) => !filteredPrograms.includes(program))
+      .forEach((program) => {
+        echo(chalk.yellow(`Program not found: ${workingDirectory}/${program}`));
+      });
+  }
+
+  return filteredPrograms;
 }
 
 export function getAllProgramFolders() {
