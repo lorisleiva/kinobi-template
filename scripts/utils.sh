@@ -10,6 +10,9 @@ GRN() { echo $'\e[1;32m'$1$'\e[0m'; }
 YLW() { echo $'\e[1;33m'$1$'\e[0m'; }
 CYN() { echo $'\e[1;36m'$1$'\e[0m'; }
 
+# Set global environment variables.
+CARGO_TERM_COLOR=always
+
 # TOML parser that installs and delegates to the tomato-toml CLI.
 toml() {
   if [ ! -f $WORKING_DIR/.cargo/bin/tomato ]; then

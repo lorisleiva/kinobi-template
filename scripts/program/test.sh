@@ -13,7 +13,7 @@ for p in ${PROGRAMS[@]}; do
     if [ -d ${WORKING_DIR}/${p} ]; then
         cd ${WORKING_DIR}/${p}
         if [ ! "$(command -v $SOLFMT)" = "" ]; then
-            CARGO_TERM_COLOR=always cargo test-sbf $* 2>&1 | ${SOLFMT}
+            RUST_LOG=error cargo test-sbf $* 2>&1 | ${SOLFMT}
         else
             RUST_LOG=error cargo test-sbf $*
         fi
