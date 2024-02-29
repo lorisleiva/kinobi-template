@@ -9,16 +9,15 @@
     "programs:lint": "./scripts/program/lint.sh",
     "clients:rust:test": "./scripts/client/test-rust.sh",
     "clients:js:test": "./scripts/client/test-js.sh",
-    "generate": "dotenvx run -q -- pnpm generate:idls && pnpm generate:clients",
-    "generate:idls": "dotenvx run -q -- node ./scripts/generate-idls.cjs",
-    "generate:clients": "dotenvx run -q -- node ./scripts/generate-clients.cjs",
-    "validator": "CI=1 dotenvx run -q -- amman start --config ./scripts/validator.cjs",
-    "validator:debug": "dotenvx run -q -- amman start --config ./scripts/validator.cjs",
-    "validator:logs": "CI=1 dotenvx run -q -- amman logs",
-    "validator:stop": "dotenvx run -q -- amman stop"
+    "generate": "pnpm generate:idls && pnpm generate:clients",
+    "generate:idls": "node ./scripts/generate-idls.cjs",
+    "generate:clients": "node ./scripts/generate-clients.cjs",
+    "validator": "CI=1 amman start --config ./scripts/validator.cjs",
+    "validator:debug": "amman start --config ./scripts/validator.cjs",
+    "validator:logs": "CI=1 amman logs",
+    "validator:stop": "amman stop"
   },
   "devDependencies": {
-    "@dotenvx/dotenvx": "^0.20.2",
     "@iarna/toml": "^2.2.5",
     "@metaplex-foundation/amman": "^0.12.1",
     "@metaplex-foundation/kinobi": "^0.17.4",
