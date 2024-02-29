@@ -12,6 +12,7 @@ CYN() { echo $'\e[1;36m'$1$'\e[0m'; }
 
 # Set global environment variables.
 CARGO_TERM_COLOR=always
+SOL_FORMATTER="solfmt"
 
 # TOML parser that installs and delegates to the tomato-toml CLI.
 toml() {
