@@ -33,6 +33,14 @@ kinobi.update(
         payer: { defaultValue: k.accountValueNode("authority") },
       },
     },
+    increment: {
+      accounts: {
+        counter: { defaultValue: k.pdaValueNode("counter") },
+      },
+      arguments: {
+        amount: { defaultValue: k.noneValueNode() },
+      },
+    },
   })
 );
 

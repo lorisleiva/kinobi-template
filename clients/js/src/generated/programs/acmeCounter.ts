@@ -52,6 +52,7 @@ export function identifyAcmeCounterAccount(
 
 export enum AcmeCounterInstruction {
   Create,
+  Increment,
 }
 
 export function identifyAcmeCounterInstruction(
@@ -61,6 +62,9 @@ export function identifyAcmeCounterInstruction(
     instruction instanceof Uint8Array ? instruction : instruction.data;
   if (memcmp(data, getU8Encoder().encode(0), 0)) {
     return AcmeCounterInstruction.Create;
+  }
+  if (memcmp(data, getU8Encoder().encode(1), 0)) {
+    return AcmeCounterInstruction.Increment;
   }
   throw new Error(
     'The provided instruction could not be identified as a acmeCounter instruction.'

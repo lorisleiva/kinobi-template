@@ -13,11 +13,11 @@ import {
 } from './_setup';
 
 test('it creates a new counter account', async (t) => {
-  // Given
+  // Given an authority key pair with some SOL.
   const client = createDefaultSolanaClient();
   const authority = await generateKeyPairSignerWithSol(client);
 
-  // When
+  // When we create a new counter account.
   const createIx = await getCreateInstructionAsync({ authority });
   await pipe(
     await createDefaultTransaction(client, authority),
@@ -25,7 +25,7 @@ test('it creates a new counter account', async (t) => {
     (tx) => signAndSendTransaction(client, tx)
   );
 
-  // Then
+  // Then we expect the counter account to exist and have a value of 0.
   const counter = await fetchCounterFromSeeds(client.rpc, {
     authority: authority.address,
   });

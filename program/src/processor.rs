@@ -3,8 +3,10 @@ use solana_program::{
     account_info::AccountInfo, entrypoint::ProgramResult, msg, pubkey::Pubkey, system_program,
 };
 
-use crate::assertions::{assert_pda, assert_same_pubkeys, assert_signer, assert_writable};
-use crate::instruction::accounts::CreateAccounts;
+use crate::assertions::{
+    assert_pda, assert_program_owner, assert_same_pubkeys, assert_signer, assert_writable,
+};
+use crate::instruction::accounts::{CreateAccounts, IncrementAccounts};
 use crate::instruction::CounterInstruction;
 use crate::state::{Counter, Key};
 use crate::utils::create_account;
@@ -19,6 +21,10 @@ pub fn process_instruction<'a>(
         CounterInstruction::Create => {
             msg!("Instruction: Create");
             create(accounts)
+        }
+        CounterInstruction::Increment { amount } => {
+            msg!("Instruction: Increment");
+            increment(accounts, amount)
         }
     }
 }
@@ -66,5 +72,26 @@ fn create<'a>(accounts: &'a [AccountInfo<'a>]) -> ProgramResult {
         Some(&[&seeds]),
     )?;
 
+    counter.save(ctx.accounts.counter)
+}
+
+fn increment<'a>(accounts: &'a [AccountInfo<'a>], amount: Option<u32>) -> ProgramResult {
+    // Accounts.
+    let ctx = IncrementAccounts::context(accounts)?;
+
+    // Guards.
+    assert_signer("authority", ctx.accounts.authority)?;
+    assert_pda(
+        "counter",
+        ctx.accounts.counter,
+        &crate::ID,
+        &Counter::seeds(ctx.accounts.authority.key),
+    )?;
+    assert_program_owner("counter", ctx.accounts.counter, &crate::ID)?;
+    let mut counter = Counter::load(ctx.accounts.counter)?;
+    assert_same_pubkeys("authority", ctx.accounts.authority, &counter.authority)?;
+
+    // Increment Counter PDA.
+    counter.value += amount.unwrap_or(1);
     counter.save(ctx.accounts.counter)
 }
