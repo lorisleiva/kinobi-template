@@ -1,3 +1,5 @@
+#!/usr/bin/env node
+
 const path = require("path");
 const k = require("@metaplex-foundation/kinobi");
 const { getAllProgramIdls } = require("./utils.cjs");

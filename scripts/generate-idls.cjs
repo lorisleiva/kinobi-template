@@ -1,3 +1,5 @@
+#!/usr/bin/env node
+
 const path = require("path");
 const { generateIdl } = require("@metaplex-foundation/shank-js");
 const { getCargo, getProgramFolders } = require("./utils.cjs");
