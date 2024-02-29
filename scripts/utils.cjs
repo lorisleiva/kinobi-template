@@ -3,12 +3,19 @@ const { readFileSync } = require("fs");
 const { parse: parseToml } = require("@iarna/toml");
 
 module.exports = {
-  getExternalProgramOutputDir,
-  getExternalProgramAddresses,
-  getProgramFolders,
   getAllProgramFolders,
+  getAllProgramIdls,
   getCargo,
+  getExternalProgramAddresses,
+  getExternalProgramOutputDir,
+  getProgramFolders,
 };
+
+function getAllProgramIdls() {
+  return getAllProgramFolders().map((folder) =>
+    path.join(__dirname, "..", folder, "idl.json")
+  );
+}
 
 function getExternalProgramOutputDir() {
   const config =
