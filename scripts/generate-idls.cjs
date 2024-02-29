@@ -1,40 +1,21 @@
 const path = require("path");
-const fs = require("fs");
 const { generateIdl } = require("@metaplex-foundation/shank-js");
+const { getCargo, getProgramFolders } = require("./utils.cjs");
 
 const binaryInstallDir = path.join(__dirname, "..", ".cargo");
 
-getPrograms().forEach((program) => {
+getProgramFolders().forEach((folder) => {
+  const cargo = getCargo(folder);
+  const isShank = Object.keys(cargo.dependencies).includes("shank");
+  const programDir = path.join(__dirname, "..", folder);
+
   generateIdl({
-    generator: program.generator,
-    programName: program.name,
-    programId: program.address,
-    idlDir: program.programDir,
+    generator: isShank ? "shank" : "anchor",
+    programName: cargo.package.name.replace(/-/g, "_"),
+    programId: cargo.package.metadata.solana["program-id"],
+    idlDir: programDir,
     idlName: "idl",
-    programDir: program.programDir,
+    programDir,
     binaryInstallDir,
   });
 });
-
-function getPrograms() {
-  const folders = process.env.PROGRAMS.split(/\s+/);
-  const addresses = process.env.PROGRAMS_ADDRESSES.split(/\s+/);
-  return folders.map((folder, index) => {
-    const cargoFile = fs.readFileSync(
-      path.join(__dirname, "..", folder, "Cargo.toml"),
-      "utf8"
-    );
-    const name = cargoFile.match(/name = "([^"]+)"/)[1].replace(/-/g, "_");
-    const binary = `${name}.so`;
-    const isShank = cargoFile.match(/shank/);
-    return {
-      folder,
-      programDir: path.join(__dirname, "..", folder),
-      address: addresses[index],
-      binary: binary,
-      name: name,
-      isShank,
-      generator: isShank ? "shank" : "anchor",
-    };
-  });
-}

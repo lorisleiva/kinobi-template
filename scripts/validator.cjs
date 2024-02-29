@@ -1,6 +1,10 @@
 const path = require("path");
-const fs = require("fs");
-const TOML = require("@iarna/toml");
+const {
+  getCargo,
+  getExternalProgramAddresses,
+  getExternalProgramOutputDir,
+  getProgramFolders,
+} = require("./utils.cjs");
 
 module.exports = {
   validator: {
@@ -10,12 +14,9 @@ module.exports = {
 };
 
 function getPrograms() {
-  const folders = process.env.PROGRAMS.split(/\s+/);
   const binaryDir = path.join(__dirname, "..", "target", "deploy");
-  return folders.map((folder) => {
-    const cargo = TOML.parse(
-      fs.readFileSync(path.join(__dirname, "..", folder, "Cargo.toml"), "utf8")
-    );
+  return getProgramFolders().map((folder) => {
+    const cargo = getCargo(folder);
     const name = cargo.package.name.replace(/-/g, "_");
     return {
       label: name,
@@ -26,13 +27,8 @@ function getPrograms() {
 }
 
 function getExternalPrograms() {
-  const addresses = process.env.PROGRAMS_EXTERNAL_ADDRESSES.split(/\s+/);
-  const binaryDir = path.join(
-    __dirname,
-    "..",
-    process.env.PROGRAMS_EXTERNAL_OUTPUT
-  );
-  return addresses.map((address) => ({
+  const binaryDir = getExternalProgramOutputDir();
+  return getExternalProgramAddresses().map((address) => ({
     label: address,
     programId: address,
     deployPath: path.join(binaryDir, `${address}.so`),
