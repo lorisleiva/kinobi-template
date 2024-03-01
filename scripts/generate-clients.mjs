@@ -1,8 +1,7 @@
-#!/usr/bin/env node
-
-const path = require("path");
-const k = require("@metaplex-foundation/kinobi");
-const { getAllProgramIdls } = require("./utils.cjs");
+#!/usr/bin/env zx
+import "zx/globals";
+import * as k from "@metaplex-foundation/kinobi";
+import { getAllProgramIdls } from "./utils.mjs";
 
 // Instanciate Kinobi.
 const kinobi = k.createFromIdls(getAllProgramIdls());

@@ -1,8 +1,7 @@
-#!/usr/bin/env node
-
-const path = require("path");
-const { generateIdl } = require("@metaplex-foundation/shank-js");
-const { getCargo, getProgramFolders } = require("./utils.cjs");
+#!/usr/bin/env zx
+import "zx/globals";
+import { generateIdl } from "@metaplex-foundation/shank-js";
+import { getCargo, getProgramFolders } from "./utils.mjs";
 
 const binaryInstallDir = path.join(__dirname, "..", ".cargo");
 
