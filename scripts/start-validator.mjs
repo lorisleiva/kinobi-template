@@ -43,6 +43,7 @@ programs.forEach(({ programId, deployPath }) => {
 });
 
 // Start the validator in detached mode.
+fs.writeFileSync(cliLogs, "", () => {});
 const out = fs.openSync(cliLogs, "a");
 const err = fs.openSync(cliLogs, "a");
 const validator = spawn("solana-test-validator", args, {
@@ -56,14 +57,13 @@ await spinner(
   "Waiting for local validator to stabilize...",
   () =>
     new Promise((resolve) => {
-      fs.writeFileSync(cliLogs, "", () => {});
-      fs.watchFile(cliLogs, () => {
+      setInterval(() => {
         const logs = fs.readFileSync(cliLogs, "utf8");
         if (logs.includes("Confirmed Slot: 1")) {
           fs.rmSync(cliLogs);
           resolve();
         }
-      });
+      }, 1000);
     })
 );
 
