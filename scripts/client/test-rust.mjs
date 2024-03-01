@@ -1,9 +1,9 @@
 #!/usr/bin/env zx
 import "zx/globals";
-import { startValidator, stopValidator, workingDirectory } from "../utils.mjs";
+import { workingDirectory } from "../utils.mjs";
 
-// Start the local validator.
-await startValidator();
+// Start the local validator if it's not already running.
+await $`pnpm validator`;
 
 // Run the tests.
 cd(path.join(workingDirectory, "clients", "rust"));
@@ -13,6 +13,3 @@ if (hasSolfmt) {
 } else {
   await $`cargo test-sbf ${argv._}`;
 }
-
-// Stop the local validator.
-await stopValidator();

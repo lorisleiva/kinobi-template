@@ -12,10 +12,8 @@
     "generate": "pnpm generate:idls && pnpm generate:clients",
     "generate:idls": "./scripts/generate-idls.mjs",
     "generate:clients": "./scripts/generate-clients.mjs",
-    "validator": "CI=1 amman start --config ./scripts/validator.cjs",
-    "validator:debug": "amman start --config ./scripts/validator.cjs",
-    "validator:logs": "CI=1 amman logs",
-    "validator:stop": "amman stop"
+    "validator": "./scripts/start-validator.mjs",
+    "validator:stop": "./scripts/stop-validator.mjs"
   },
   "devDependencies": {
     "@iarna/toml": "^2.2.5",

@@ -9,13 +9,23 @@ import {
   getProgramFolders,
 } from "./utils.mjs";
 
+// Options and arguments.
+const force = argv["force"];
 const cliLogs = path.join(os.tmpdir(), "validator-cli.log");
 const isValidatorRunning = (await $`lsof -t -i:8899`.quiet().exitCode) === 0;
+
+// Keep the validator running when not using the force flag.
+if (!force && isValidatorRunning) {
+  echo(chalk.yellow("Local validator is already running."));
+  process.exit();
+}
+
+// Initial message.
 const verb = isValidatorRunning ? "Restarting" : "Starting";
 const programs = [...getPrograms(), ...getExternalPrograms()];
 const programPluralized = programs.length === 1 ? "program" : "programs";
 echo(
-  `${verb} validator with ${programs.length} custom ${programPluralized}...`
+  `${verb} local validator with ${programs.length} custom ${programPluralized}...`
 );
 
 // Kill the validator if it's already running.
@@ -43,7 +53,7 @@ validator.unref();
 
 // Wait for the validator to stabilize.
 await spinner(
-  "Waiting for validator to stabilize...",
+  "Waiting for local validator to stabilize...",
   () =>
     new Promise((resolve) => {
       fs.writeFileSync(cliLogs, "", () => {});
@@ -57,7 +67,7 @@ await spinner(
     })
 );
 
-echo("Validator is up and running...");
+echo(chalk.green("Local validator is up and running!"));
 process.exit();
 
 function getPrograms() {
