@@ -17,6 +17,9 @@ async function dump() {
   if (addresses.length === 0) return;
   echo(`Dumping external accounts to '${outputDir}':`);
 
+  // Create the output directory if needed.
+  $`mkdir -p ${outputDir}`.quiet();
+
   // Copy the binaries from the chain or warn if they are different.
   await Promise.all(
     addresses.map(async (address) => {

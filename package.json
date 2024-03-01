@@ -1,12 +1,12 @@
 {
   "private": true,
   "scripts": {
-    "programs:build": "./scripts/program/build.sh",
-    "programs:test": "./scripts/program/test.sh",
-    "programs:debug": "./scripts/program/test.sh",
-    "programs:clean": "./scripts/program/clean.sh",
-    "programs:format": "./scripts/program/format.sh",
-    "programs:lint": "./scripts/program/lint.sh",
+    "programs:build": "./scripts/program/build.mjs",
+    "programs:test": "./scripts/program/test.mjs",
+    "programs:debug": "./scripts/program/test.mjs",
+    "programs:clean": "./scripts/program/clean.mjs",
+    "programs:format": "./scripts/program/format.mjs",
+    "programs:lint": "./scripts/program/lint.mjs",
     "clients:rust:test": "./scripts/client/test-rust.sh",
     "clients:js:test": "./scripts/client/test-js.sh",
     "generate": "pnpm generate:idls && pnpm generate:clients",
