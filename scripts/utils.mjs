@@ -6,6 +6,23 @@ process.env.CARGO_TERM_COLOR = "always";
 
 export const workingDirectory = (await $`pwd`.quiet()).toString().trim();
 
+export async function startValidator() {
+  echo("Starting local validator...");
+  const validator = $`(cd ${workingDirectory} && pnpm validator)`.quiet();
+  for await (const chunk of validator.stdout) {
+    if (chunk.includes("up and running")) {
+      await sleep(3000);
+      echo("Validator is up and running...");
+      break;
+    }
+  }
+}
+
+export async function stopValidator() {
+  echo("Stopping local validator...");
+  await $`kill $(lsof -t -i:8899)`.quiet();
+}
+
 export function getAllProgramIdls() {
   return getAllProgramFolders().map((folder) =>
     path.join(workingDirectory, folder, "idl.json")
